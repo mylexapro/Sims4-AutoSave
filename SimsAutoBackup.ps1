@@ -9,7 +9,7 @@ $host.UI.RawUI.WindowTitle = "SIMSBACKUP_$PID"
 # Configuration
 $SimsSavesPath = "$env:USERPROFILE\OneDrive\Documents\Electronic Arts\The Sims 4\saves"
 $BackupFolder = "$env:USERPROFILE\OneDrive\Documents\Sims4_Backups"
-$BackupIntervalMinutes = 30  # How often it backs up
+$BackupIntervalMinutes = 15  # How often it backs up
 $MaxBackupsToKeep = 20       # Number of backups to keep before deleting old ones
 
 # Create backup folder if it doesn't exist
