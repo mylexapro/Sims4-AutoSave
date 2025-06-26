@@ -1,4 +1,5 @@
 $host.UI.RawUI.WindowTitle = "SIMSBACKUP_$PID"
+
 <#
 .SYNOPSIS
     Automatically backs up Sims 4 save files.
@@ -9,8 +10,8 @@ $host.UI.RawUI.WindowTitle = "SIMSBACKUP_$PID"
 # Configuration
 $SimsSavesPath = "$env:USERPROFILE\OneDrive\Documents\Electronic Arts\The Sims 4\saves"
 $BackupFolder = "$env:USERPROFILE\OneDrive\Documents\Sims4_Backups"
-$BackupIntervalMinutes = 15  # How often it backs up
-$MaxBackupsToKeep = 20       # Number of backups to keep before deleting old ones
+$BackupIntervalMinutes = 30  # How often it backs up
+$MaxBackupsToKeep = 5       # Reduced from 20 to 5 backups
 
 # Create backup folder if it doesn't exist
 if (-not (Test-Path -Path $BackupFolder)) {
@@ -25,15 +26,23 @@ function CreateBackup {
     
     try {
         # Create the backup folder first (if it doesn't exist)
-New-Item -ItemType Directory -Path $backupPath -Force | Out-Null
-# Copy each item individually
-Get-ChildItem -Path $SimsSavesPath | ForEach-Object {
-    Copy-Item -Path $_.FullName -Destination $backupPath -Recurse -Force
-}
+        New-Item -ItemType Directory -Path $backupPath -Force | Out-Null
+        
+        # Copy only save files (not other files in the directory)
+        $saveFiles = Get-ChildItem -Path $SimsSavesPath -Filter "*.save"
+        if ($saveFiles.Count -eq 0) {
+            Write-Host "No save files found to backup at $(Get-Date -Format 'HH:mm:ss')"
+            return
+        }
+        
+        $saveFiles | ForEach-Object {
+            Copy-Item -Path $_.FullName -Destination $backupPath -Force
+        }
+        
         Write-Host "Backup created at $(Get-Date -Format 'HH:mm:ss') in $backupPath"
         
         # Delete oldest backups if too many exist
-        $backups = Get-ChildItem -Path $BackupFolder | Sort-Object CreationTime -Descending
+        $backups = Get-ChildItem -Path $BackupFolder -Directory | Sort-Object CreationTime -Descending
         if ($backups.Count -gt $MaxBackupsToKeep) {
             $oldestBackups = $backups | Select-Object -Last ($backups.Count - $MaxBackupsToKeep)
             foreach ($oldBackup in $oldestBackups) {
@@ -46,6 +55,7 @@ Get-ChildItem -Path $SimsSavesPath | ForEach-Object {
         Write-Host "Error creating backup: $_" -ForegroundColor Red
     }
 }
+
 # ======================
 # ENHANCED MAIN LOOP
 # ======================
