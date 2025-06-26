@@ -5,6 +5,20 @@ A PowerShell script that automatically backs up your Sims 4 saves to GitHub with
 ![PowerShell](https://img.shields.io/badge/PowerShell-%235391FE.svg?style=for-the-badge&logo=powershell&logoColor=white)
 ![GitHub](https://img.shields.io/badge/github-%23121011.svg?style=for-the-badge&logo=github&logoColor=white)
 
+## Recent Improvements
+
+### v1.1 - Optimization Update
+- 🔍 **Selective Backup**: Now only copies `.save` files instead of entire directory
+- 🗑️ **Smarter Cleanup**: Fixed backup deletion to properly maintain only 5 most recent backups
+- ✅ **Save File Verification**: Added check for existence of save files before backup
+- ⏱️ **Reduced Storage Usage**: Decreased maximum backups from 20 to 5
+- 📝 **Enhanced Logging**: Improved error handling and status messages
+
+```diff
+- Old: Backed up entire saves directory, kept 20 copies
++ New: Only backs up .save files, maintains 5 copies, verifies files exist
+```
+
 ## ✨ Features
 - ⏰ Automatic saves every 30 minutes (configurable)
 - 🗃️ Keeps last 20 save versions (configurable)
@@ -64,3 +78,4 @@ Repository exists and is accessible
 
 ## ⚖️ Usage  
 Feel free to use, modify, and share this script - no permission needed!
+
